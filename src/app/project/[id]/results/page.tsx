@@ -167,9 +167,8 @@ Stories/anecdotes:   ██████ 25%
    - Policy details`
 };
 
-export default function ResultsPage({ params }: { params: Promise<{ id: string }> }) {
-  const resolvedParams = use(params);
-  const projectId = resolvedParams.id;
+export default function ResultsPage({ params }: { params: { id: string } }) {
+  const projectId = params.id;
   
   const [results, setResults] = useState<AnalysisResult[]>([
     {

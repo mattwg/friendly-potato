@@ -2,18 +2,16 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { use } from 'react';
 
 export default function ProjectLayout({
   children,
   params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }) {
   const pathname = usePathname();
-  const resolvedParams = use(params);
-  const projectId = resolvedParams.id;
+  const projectId = params.id;
   
   const isSettingsPage = !pathname.includes('/results');
 
@@ -46,7 +44,7 @@ export default function ProjectLayout({
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                   }`}
                 >
-                  Results
+                  Analysis Results
                 </Link>
               </div>
             </div>
@@ -55,7 +53,7 @@ export default function ProjectLayout({
       </nav>
 
       {/* Main Content */}
-      <main className="max-w-6xl mx-auto p-8">
+      <main className="max-w-6xl mx-auto px-8 py-12">
         {children}
       </main>
     </div>
