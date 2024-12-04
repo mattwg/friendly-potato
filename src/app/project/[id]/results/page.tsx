@@ -212,70 +212,76 @@ export default function ResultsPage({ params }: { params: { id: string } }) {
   const activeResult = results.find(r => r.id === activeResultId);
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Analysis Results</h1>
-        <div className="flex gap-4">
-          <select
-            value={selectedAnalyzer}
-            onChange={(e) => setSelectedAnalyzer(e.target.value)}
-            className="border rounded-lg p-2"
-          >
-            <option value="">Select Analyzer</option>
-            {analyzers.map((analyzer) => (
-              <option key={analyzer} value={analyzer}>
-                {analyzer}
-              </option>
-            ))}
-          </select>
-          <button
-            onClick={runAnalysis}
-            disabled={!selectedAnalyzer}
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors disabled:bg-gray-300"
-          >
-            Run Analysis
-          </button>
+    <div className="py-6 bg-gray-100 min-h-screen">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-white shadow-sm rounded-lg p-6">
+          <div className="space-y-8">
+            {/* Header */}
+            <div className="flex justify-between items-center">
+              <h1 className="text-3xl font-bold">Analysis Results</h1>
+              <div className="flex gap-4">
+                <select
+                  value={selectedAnalyzer}
+                  onChange={(e) => setSelectedAnalyzer(e.target.value)}
+                  className="border rounded-lg p-2"
+                >
+                  <option value="">Select Analyzer</option>
+                  {analyzers.map((analyzer) => (
+                    <option key={analyzer} value={analyzer}>
+                      {analyzer}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  onClick={runAnalysis}
+                  disabled={!selectedAnalyzer}
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors disabled:bg-gray-300"
+                >
+                  Run Analysis
+                </button>
+              </div>
+            </div>
+
+            {/* Results Section */}
+            {results.length > 0 ? (
+              <TabView
+                tabs={results.map(r => `${r.analyzerName} (${r.timestamp})`)}
+                activeTab={activeResult ? `${activeResult.analyzerName} (${activeResult.timestamp})` : ''}
+                onTabChange={(tab) => {
+                  const result = results.find(r => `${r.analyzerName} (${r.timestamp})` === tab);
+                  if (result) {
+                    setActiveResultId(result.id);
+                  }
+                }}
+              >
+                {activeResult && (
+                  <div className="mt-6">
+                    {activeResult.markdownContent && (
+                      <div className="prose max-w-none">
+                        <ReactMarkdown>{activeResult.markdownContent}</ReactMarkdown>
+                      </div>
+                    )}
+                    {activeResult.imageUrl && (
+                      <img
+                        src={activeResult.imageUrl}
+                        alt={`${activeResult.analyzerName} visualization`}
+                        className="max-w-full h-auto rounded-lg"
+                      />
+                    )}
+                  </div>
+                )}
+              </TabView>
+            ) : (
+              <div className="text-center py-12">
+                <h3 className="text-lg font-medium text-gray-900">No analysis results yet</h3>
+                <p className="mt-2 text-sm text-gray-500">
+                  Select an analyzer and run analysis to see results here
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-
-      {/* Results Section */}
-      {results.length > 0 ? (
-        <TabView
-          tabs={results.map(r => `${r.analyzerName} (${r.timestamp})`)}
-          activeTab={activeResult ? `${activeResult.analyzerName} (${activeResult.timestamp})` : ''}
-          onTabChange={(tab) => {
-            const result = results.find(r => `${r.analyzerName} (${r.timestamp})` === tab);
-            if (result) {
-              setActiveResultId(result.id);
-            }
-          }}
-        >
-          {activeResult && (
-            <div className="border rounded-lg p-6 bg-white shadow-sm">
-              {activeResult.markdownContent && (
-                <div className="prose max-w-none">
-                  <ReactMarkdown>{activeResult.markdownContent}</ReactMarkdown>
-                </div>
-              )}
-              {activeResult.imageUrl && (
-                <img
-                  src={activeResult.imageUrl}
-                  alt={`${activeResult.analyzerName} visualization`}
-                  className="max-w-full h-auto rounded-lg"
-                />
-              )}
-            </div>
-          )}
-        </TabView>
-      ) : (
-        <div className="text-center py-12">
-          <h3 className="text-lg font-medium text-gray-900">No analysis results yet</h3>
-          <p className="mt-2 text-sm text-gray-500">
-            Select an analyzer and run analysis to see results here
-          </p>
-        </div>
-      )}
     </div>
   );
 }
