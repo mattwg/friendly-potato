@@ -216,9 +216,8 @@ export default function ResultsPage({ params }: { params: { id: string } }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white shadow-sm rounded-lg p-6">
           <div className="space-y-8">
-            {/* Header */}
-            <div className="flex justify-between items-center">
-              <h1 className="text-3xl font-bold">Analysis Results</h1>
+            {/* Analysis Controls */}
+            <div className="flex justify-end">
               <div className="flex gap-4">
                 <select
                   value={selectedAnalyzer}
