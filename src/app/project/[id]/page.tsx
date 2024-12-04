@@ -1,10 +1,32 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import ReactMarkdown from 'react-markdown';
 
 interface ProjectPageProps {
   params: { id: string };
 }
+
+const EXAMPLE_MARKDOWN = `
+## Research Example
+
+This is an example of how to structure your research objectives:
+
+### Key Questions
+1. What are the primary factors affecting...?
+2. How do participants respond to...?
+3. What patterns emerge from...?
+
+### Methods
+- Semi-structured interviews
+- Thematic analysis
+- Participant observation
+
+### Expected Outcomes
+- Understanding of key themes
+- Identification of patterns
+- Recommendations for future research
+`;
 
 export default function ProjectPage({ params }: ProjectPageProps) {
   const projectId = params.id;
@@ -12,6 +34,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [transcripts, setTranscripts] = useState<File[]>([]);
   const [objectives, setObjectives] = useState('');
+  const [showExample, setShowExample] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleTitleClick = () => {
@@ -81,9 +104,24 @@ export default function ProjectPage({ params }: ProjectPageProps) {
 
               {/* Research Objectives */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Research Objectives
-                </label>
+                <div className="flex justify-between items-center mb-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Research Objectives
+                  </label>
+                  <button
+                    onClick={() => setShowExample(!showExample)}
+                    className="text-sm text-blue-600 hover:text-blue-800"
+                  >
+                    {showExample ? 'Hide Example' : 'Show Example'}
+                  </button>
+                </div>
+                {showExample && (
+                  <div className="mb-4 p-4 bg-gray-50 rounded-md">
+                    <ReactMarkdown className="prose prose-sm max-w-none">
+                      {EXAMPLE_MARKDOWN}
+                    </ReactMarkdown>
+                  </div>
+                )}
                 <textarea
                   value={objectives}
                   onChange={(e) => setObjectives(e.target.value)}
