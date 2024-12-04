@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
+import { getProject, type Project } from '../../lib/projects';
 
 interface ProjectPageProps {
   params: { id: string };
@@ -30,12 +31,20 @@ This is an example of how to structure your research objectives:
 
 export default function ProjectPage({ params }: ProjectPageProps) {
   const projectId = params.id;
-  const [projectTitle, setProjectTitle] = useState('Project Title');
+  const [project, setProject] = useState<Project | null>(null);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [transcripts, setTranscripts] = useState<File[]>([]);
   const [objectives, setObjectives] = useState('');
   const [showExample, setShowExample] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const loadProject = async () => {
+      const projectData = await getProject(params.id);
+      setProject(projectData);
+    };
+    loadProject();
+  }, [params.id]);
 
   const handleTitleClick = () => {
     setIsEditingTitle(true);
@@ -83,8 +92,8 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                 {isEditingTitle ? (
                   <input
                     type="text"
-                    value={projectTitle}
-                    onChange={(e) => setProjectTitle(e.target.value)}
+                    value={project?.title || ''}
+                    onChange={(e) => setProject(prev => ({ ...prev, title: e.target.value }))}
                     onBlur={handleTitleBlur}
                     onKeyDown={handleTitleKeyDown}
                     className="text-2xl font-semibold text-gray-900 w-full border-b-2 border-blue-500 focus:outline-none"
@@ -95,7 +104,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                     onClick={handleTitleClick}
                     className="text-2xl font-semibold text-gray-900 cursor-pointer hover:text-gray-700"
                   >
-                    {projectTitle}
+                    {project?.title || 'Loading...'}
                   </h2>
                 )}
               </div>

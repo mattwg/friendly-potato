@@ -1,5 +1,17 @@
 import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { JWT } from "next-auth/jwt";
+import { Session } from "next-auth";
+
+// Extend the built-in session type to include our custom fields
+interface ExtendedSession extends Session {
+  user: {
+    id: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+  }
+}
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -39,11 +51,14 @@ export const authOptions: AuthOptions = {
       }
       return token;
     },
-    async session({ session, token }) {
-      if (session.user && token) {
-        session.user.id = token.id as string;
-      }
-      return session;
+    async session({ session, token }): Promise<ExtendedSession> {
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: token.id as string
+        }
+      };
     }
   },
   pages: {

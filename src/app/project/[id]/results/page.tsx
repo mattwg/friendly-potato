@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { use } from 'react';
 import ReactMarkdown from 'react-markdown';
 import TabView from '../../../components/TabView';
+import { getProject, type Project } from '../../../lib/projects';
 
 interface AnalysisResult {
   id: string;
@@ -192,6 +193,15 @@ export default function ResultsPage({ params }: { params: { id: string } }) {
   ]);
   const [selectedAnalyzer, setSelectedAnalyzer] = useState('');
   const [activeResultId, setActiveResultId] = useState<string | null>('1');
+  const [project, setProject] = useState<Project | null>(null);
+
+  useEffect(() => {
+    const loadProject = async () => {
+      const projectData = await getProject(params.id);
+      setProject(projectData);
+    };
+    loadProject();
+  }, [params.id]);
 
   const analyzers = Object.keys(SAMPLE_ANALYSES);
 
@@ -215,6 +225,11 @@ export default function ResultsPage({ params }: { params: { id: string } }) {
     <div className="py-6 bg-gray-100 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white shadow-sm rounded-lg p-6">
+          {project && (
+            <div className="mb-8">
+              <h1 className="text-3xl font-bold text-gray-900">{project.title}</h1>
+            </div>
+          )}
           <div className="space-y-8">
             {/* Analysis Controls */}
             <div className="flex justify-end">
