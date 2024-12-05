@@ -93,7 +93,10 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                   <input
                     type="text"
                     value={project?.title || ''}
-                    onChange={(e) => setProject(prev => ({ ...prev, title: e.target.value }))}
+                    onChange={(e) => setProject(prev => prev ? {
+                      ...prev,
+                      title: e.target.value
+                    } : null)}
                     onBlur={handleTitleBlur}
                     onKeyDown={handleTitleKeyDown}
                     className="text-2xl font-semibold text-gray-900 w-full border-b-2 border-blue-500 focus:outline-none"

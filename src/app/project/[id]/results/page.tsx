@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { use } from 'react';
 import ReactMarkdown from 'react-markdown';
 import TabView from '../../../components/TabView';
 import { getProject, type Project } from '../../../lib/projects';
+import Image from 'next/image';
 
 interface AnalysisResult {
   id: string;
@@ -276,11 +276,15 @@ export default function ResultsPage({ params }: { params: { id: string } }) {
                       </div>
                     )}
                     {activeResult.imageUrl && (
-                      <img
-                        src={activeResult.imageUrl}
-                        alt={`${activeResult.analyzerName} visualization`}
-                        className="max-w-full h-auto rounded-lg"
-                      />
+                      <div className="mt-4">
+                        <Image
+                          src={activeResult.imageUrl}
+                          alt="Analysis visualization"
+                          width={800}
+                          height={600}
+                          className="max-w-full h-auto rounded-lg shadow-lg"
+                        />
+                      </div>
                     )}
                   </div>
                 )}
